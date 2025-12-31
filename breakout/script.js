@@ -16,7 +16,7 @@ let gameRunning = false;
 function resizeCanvas() {
   const width = canvas.parentElement.clientWidth;
   canvas.width = width;
-  canvas.height = width; // square
+  canvas.height = width; // square canvas
   paddleWidth = canvas.width * 0.18;
   paddleHeight = canvas.height * paddleHeightRatio;
   ballRadius = canvas.width * ballRadiusRatio;
@@ -90,7 +90,7 @@ function drawBall() {
   ctx.closePath();
 }
 
-// Draw cars with fading
+// Draw cars with fade effect
 function drawCars() {
   cars.forEach((car) => {
     if (car.status === 0 && car.alpha > 0) car.alpha -= 0.08;
