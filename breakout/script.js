@@ -12,22 +12,22 @@ let paddleWidth, paddleHeight, ballRadius, x, y, dx, dy, paddleX;
 let animationId;
 let gameRunning = false;
 
-// Dynamic canvas sizing
+// Resize canvas dynamically
 function resizeCanvas() {
-  const width = canvas.parentElement.clientWidth - 30;
+  const width = canvas.parentElement.clientWidth;
   canvas.width = width;
-  canvas.height = width;
-  paddleWidth = canvas.width * 0.18; // slightly wider for fast game
+  canvas.height = width; // square
+  paddleWidth = canvas.width * 0.18;
   paddleHeight = canvas.height * paddleHeightRatio;
   ballRadius = canvas.width * ballRadiusRatio;
-  dx = 3.5; // fast ball
-  dy = -3.5; // fast ball
+  dx = 2.5;
+  dy = -2.5;
   resetPreview();
 }
 window.addEventListener("resize", resizeCanvas);
 resizeCanvas();
 
-// Initialize cars
+// Initialize cars dynamically
 function initCars() {
   cars = [];
   const totalWidth = canvas.width * 0.85;
@@ -58,8 +58,8 @@ function resetPreview() {
   paddleX = (canvas.width - paddleWidth) / 2;
   x = canvas.width / 2;
   y = canvas.height - 30;
-  dx = 3.5;
-  dy = -3.5;
+  dx = 2.5;
+  dy = -2.5;
   initCars();
   startButton.style.display = "block";
   startButton.style.left =
@@ -90,12 +90,10 @@ function drawBall() {
   ctx.closePath();
 }
 
-// Draw cars with faster fade
+// Draw cars with fading
 function drawCars() {
   cars.forEach((car) => {
-    if (car.status === 0 && car.alpha > 0) {
-      car.alpha -= 0.12; // faster fade
-    }
+    if (car.status === 0 && car.alpha > 0) car.alpha -= 0.08;
     if (car.alpha <= 0) return;
     ctx.globalAlpha = car.alpha;
     ctx.fillStyle = "#000";
@@ -178,9 +176,28 @@ canvas.addEventListener("mousemove", (e) => {
     paddleX = canvas.width - paddleWidth;
 });
 
+// Touch paddle for mobile
+canvas.addEventListener(
+  "touchmove",
+  (e) => {
+    if (!gameRunning) return;
+    e.preventDefault();
+    const rect = canvas.getBoundingClientRect();
+    const touchX = e.touches[0].clientX - rect.left;
+    paddleX = touchX - paddleWidth / 2;
+    if (paddleX < 0) paddleX = 0;
+    if (paddleX + paddleWidth > canvas.width)
+      paddleX = canvas.width - paddleWidth;
+  },
+  { passive: false }
+);
+
 // Start button
 startButton.addEventListener("click", () => {
   startButton.style.display = "none";
   gameRunning = true;
   draw();
 });
+
+// Initialize preview
+resetPreview();
