@@ -5,7 +5,7 @@ import EventPoster from "./EventPoster";
 import "../styles/carousel.css";
 
 const SLIDE_WIDTH = 400;
-const SLIDE_SPACING = 60;
+const SLIDE_SPACING = 10; // closer spacing
 const AUTOPLAY_DELAY = 4000;
 
 export default function EventCarousel() {
@@ -15,9 +15,7 @@ export default function EventCarousel() {
 
   // Reset autoplay timer
   const resetAutoplay = () => {
-    if (autoplayTimerRef.current) {
-      clearInterval(autoplayTimerRef.current);
-    }
+    if (autoplayTimerRef.current) clearInterval(autoplayTimerRef.current);
     if (!isDragging) {
       autoplayTimerRef.current = setInterval(() => {
         setCurrentIndex((prev) => (prev + 1) % events.length);
@@ -28,13 +26,11 @@ export default function EventCarousel() {
   useEffect(() => {
     resetAutoplay();
     return () => {
-      if (autoplayTimerRef.current) {
-        clearInterval(autoplayTimerRef.current);
-      }
+      if (autoplayTimerRef.current) clearInterval(autoplayTimerRef.current);
     };
   }, [isDragging]);
 
-  const handleDragEnd = (event: any, info: any) => {
+  const handleDragEnd = (info: any) => {
     setIsDragging(false);
     const threshold = 50;
     const velocity = info.velocity.x;
@@ -61,23 +57,13 @@ export default function EventCarousel() {
         onDragEnd={handleDragEnd}
       >
         {events.map((event, index) => {
-          const offset = index - currentIndex;
+          let offset = index - currentIndex;
 
-          // Handle wrapping for infinite loop effect
-          let adjustedOffset = offset;
-          if (offset > events.length / 2) {
-            adjustedOffset = offset - events.length;
-          } else if (offset < -events.length / 2) {
-            adjustedOffset = offset + events.length;
-          }
+          // Wrap around for infinite loop
+          if (offset > events.length / 2) offset -= events.length;
+          if (offset < -events.length / 2) offset += events.length;
 
-          return (
-            <CarouselSlide
-              key={event.id}
-              event={event}
-              offset={adjustedOffset}
-            />
-          );
+          return <CarouselSlide key={event.id} event={event} offset={offset} />;
         })}
       </motion.div>
     </div>
@@ -91,38 +77,30 @@ type CarouselSlideProps = {
 
 function CarouselSlide({ event, offset }: CarouselSlideProps) {
   const progress = useMotionValue(offset);
-
-  useEffect(() => {
-    progress.set(offset);
-  }, [offset, progress]);
-
-  const absOffset = Math.abs(offset);
   const slideSpacing = SLIDE_WIDTH + SLIDE_SPACING;
 
-  // Position slide relative to center
-  const baseX = useTransform(progress, (val) => val * slideSpacing);
+  // Smoothly animate to new offset whenever it changes
+  useEffect(() => {
+    animate(progress, offset, { type: "spring", stiffness: 300, damping: 30 });
+  }, [offset, progress]);
 
+  // Base X position
+  const x = useTransform(progress, (val) => val * slideSpacing);
+
+  // Scale and opacity for side slides
   const scale = useTransform(
     progress,
     [-2, -1, 0, 1, 2],
-    [0.75, 0.85, 1, 0.85, 0.75]
+    [0.85, 0.9, 1, 0.9, 0.85]
   );
   const opacity = useTransform(
     progress,
     [-2, -1, 0, 1, 2],
-    [0.3, 0.6, 1, 0.6, 0.3]
+    [0.4, 0.7, 1, 0.7, 0.4]
   );
-  const blur = useTransform(progress, [-2, -1, 0, 1, 2], [3, 2, 0, 2, 3]);
-  const rotateY = useTransform(progress, [-1, 0, 1], [-25, 0, 25]);
-  const zIndex = offset === 0 ? 3 : absOffset === 1 ? 2 : 1;
-
-  const finalX = useTransform(progress, (val) => {
-    const base = val * slideSpacing;
-    let trans = 0;
-    if (val === -1) trans = -120;
-    else if (val === 1) trans = 120;
-    return base + trans;
-  });
+  const blur = useTransform(progress, [-2, -1, 0, 1, 2], [3, 1.5, 0, 1.5, 3]);
+  const rotateY = useTransform(progress, [-1, 0, 1], [-15, 0, 15]);
+  const zIndex = offset === 0 ? 3 : Math.abs(offset) === 1 ? 2 : 1;
 
   const finalBlur = useTransform(blur, (b) => `blur(${b}px)`);
 
@@ -130,18 +108,12 @@ function CarouselSlide({ event, offset }: CarouselSlideProps) {
     <motion.div
       className="carousel__slide"
       style={{
-        x: finalX,
+        x,
         scale,
         opacity,
         rotateY,
         filter: finalBlur,
         zIndex,
-      }}
-      transition={{
-        type: "spring",
-        stiffness: 300,
-        damping: 30,
-        duration: 0.9,
       }}
     >
       <EventPoster event={event} />
