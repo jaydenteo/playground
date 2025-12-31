@@ -20,8 +20,7 @@ function resizeCanvas() {
   paddleWidth = canvas.width * 0.18;
   paddleHeight = canvas.height * paddleHeightRatio;
   ballRadius = canvas.width * ballRadiusRatio;
-  dx = 2.5;
-  dy = -2.5;
+  setSpeed();
   resetPreview();
 }
 window.addEventListener("resize", resizeCanvas);
@@ -53,19 +52,20 @@ function initCars() {
   }
 }
 
+function setSpeed() {
+  const slowSpeed = 2.5;
+  dx = slowSpeed;
+  dy = -slowSpeed;
+}
+
 // Reset preview
 function resetPreview() {
   paddleX = (canvas.width - paddleWidth) / 2;
   x = canvas.width / 2;
   y = canvas.height - 30;
-  dx = 2.5;
-  dy = -2.5;
   initCars();
   startButton.style.display = "block";
-  startButton.style.left =
-    canvas.offsetLeft + canvas.width / 2 - startButton.offsetWidth / 2 + "px";
-  startButton.style.top =
-    canvas.offsetTop + canvas.height / 2 - startButton.offsetHeight / 2 + "px";
+  setSpeed();
   gameRunning = false;
   drawPreview();
 }
