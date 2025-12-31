@@ -1,3 +1,4 @@
+/* ===== POSTER BASE ===== */
 .poster {
   width: 400px;
   height: 600px;
@@ -7,9 +8,15 @@
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  font-family: Helvetica, Arial, sans-serif;
+  font-family: "Helvetica", Arial, sans-serif;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.1);
-  transition: box-shadow 0.3s ease;
+  transition: box-shadow 0.3s ease, transform 0.3s ease;
+}
+
+.poster:hover {
+  box-shadow: 0 25px 80px rgba(0, 0, 0, 0.5),
+    0 0 0 1px rgba(255, 255, 255, 0.15);
+  transform: translateY(-3px);
 }
 
 @media (max-width: 768px) {
@@ -18,11 +25,6 @@
     height: 450px;
     padding: 20px;
   }
-}
-
-.poster:hover {
-  box-shadow: 0 25px 80px rgba(0, 0, 0, 0.5),
-    0 0 0 1px rgba(255, 255, 255, 0.15);
 }
 
 /* ===== THEMES ===== */
@@ -60,24 +62,9 @@
   margin: 0;
   z-index: 1;
   pointer-events: none;
+  text-align: center;
   white-space: nowrap;
   overflow: hidden;
-  width: calc(100% - 48px);
-  max-width: calc(100% - 48px);
-  text-align: center;
-  text-overflow: ellipsis;
-  box-sizing: border-box;
-  padding: 0;
-  word-break: keep-all;
-}
-
-@media (max-width: 768px) {
-  .poster__acronym {
-    font-size: 50px;
-    width: calc(100% - 40px);
-    max-width: calc(100% - 40px);
-    padding: 0 10px;
-  }
 }
 
 .poster__acronym-bottom {
@@ -89,47 +76,41 @@
   font-weight: 900;
   line-height: 0.85;
   letter-spacing: -0.03em;
-  margin: 0;
-  z-index: 1;
-  pointer-events: none;
-  white-space: nowrap;
-  overflow: hidden;
-  width: calc(100% - 48px);
   text-align: center;
-  color: inherit;
   opacity: 0.95;
-  text-overflow: clip;
 }
 
 @media (max-width: 768px) {
+  .poster__acronym {
+    font-size: 50px;
+  }
   .poster__acronym-bottom {
     font-size: 80px;
-    bottom: 6px;
-    width: calc(100% - 40px);
   }
 }
 
 /* ===== IMAGE ===== */
 .poster__image-wrapper {
   margin-top: 50px;
-  z-index: 2;
   position: relative;
+  z-index: 2;
 }
 
 .poster__image {
   width: 100%;
   height: 240px;
   object-fit: cover;
-  border-radius: 8px;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
-  position: relative;
+  border-radius: 12px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.poster__image:hover {
+  transform: scale(1.03);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
 }
 
 @media (max-width: 768px) {
-  .poster__image-wrapper {
-    margin-top: 70px;
-  }
-
   .poster__image {
     height: 160px;
   }
@@ -138,59 +119,61 @@
 /* ===== INFO ===== */
 .poster__info {
   margin-top: 16px;
-  z-index: 3;
   position: relative;
+  z-index: 3;
 }
 
 .poster__title {
   font-size: 24px;
   font-weight: 900;
-  margin: 0;
   line-height: 1.15;
-  letter-spacing: -0.02em;
+  margin: 0;
 }
 
 .poster__credit {
   font-size: 10px;
   letter-spacing: 0.12em;
-  margin-top: 8px;
+  margin-top: 6px;
   line-height: 1.5;
   text-transform: uppercase;
   opacity: 0.95;
   font-weight: 500;
 }
 
-/* ===== BUTTON ===== */
+/* ===== BUTTON IMPROVED ===== */
 .poster__button {
   margin-top: 12px;
-  padding: 6px 14px;
-  border-radius: 4px;
+  padding: 8px 18px;
+  border-radius: 12px;
   border: none;
   background: rgba(255, 255, 255, 0.95);
-  font-size: 9px;
+  color: #000;
+  font-size: 11px;
   font-weight: 700;
   cursor: pointer;
-  transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-  letter-spacing: 0.05em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
   display: inline-block;
+  transition: all 0.25s cubic-bezier(0.25, 0.8, 0.25, 1);
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
 }
 
 .poster__button:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  background: #fff;
+  transform: translateY(-2px) scale(1.05);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25);
 }
 
 .poster__button:active {
-  transform: translateY(0);
+  transform: translateY(0) scale(0.98);
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
 }
 
 /* ===== FOOTER ===== */
 .poster__footer {
   margin-top: auto;
-  z-index: 3;
   position: relative;
+  z-index: 3;
 }
 
 .poster__footer-content {
@@ -199,19 +182,12 @@
   gap: 4px;
 }
 
-.poster__venue {
+.poster__venue,
+.poster__date {
   font-size: 10px;
   font-weight: 700;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  line-height: 1.2;
-}
-
-.poster__date {
-  font-size: 10px;
-  font-weight: 600;
-  letter-spacing: 0.08em;
-  line-height: 1.2;
 }
 
 /* ===== TEXT STATEMENT ===== */
@@ -219,10 +195,8 @@
   font-size: 36px;
   font-weight: 900;
   line-height: 1.15;
-  z-index: 2;
   white-space: pre-line;
   margin-top: 50px;
-  letter-spacing: -0.02em;
 }
 
 /* ===== PROMO ===== */
@@ -236,6 +210,4 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  flex: 1;
-  letter-spacing: -0.01em;
 }
