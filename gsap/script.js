@@ -395,7 +395,9 @@ window.addEventListener("DOMContentLoaded", () => {
     wrapper.className = "svg-anim-container";
     wrapper.innerHTML = `
       <svg class="svg-char" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500">
-        <path class="svg-char__path" fill="none" d="M436.9,125.12l-96,82.8q37.8,12,58.8,39t21,63.6q0,44.4-27.9,80.4t-76.5,56.4q-48.6,20.39-108.6,20.4a349.26,349.26,0,0,1-87.9-10.8q-41.71-10.8-74.1-33l64.2-98.4a196.69,196.69,0,0,0,52.2,22.8,206.53,206.53,0,0,0,55.2,7.8q29.38,0,45-9.3t15.6-26.7q0-25.2-42-25.2H177.7l17.4-87,73.2-63H119.5l21.6-106.8H454.3Z"/>
+        <!-- Invisible motion path tracing the OUTER perimeter of a thick 'T' -->
+        <!-- Path follows the outer edges of the top bar and the vertical stem (closed outline) -->
+        <path class="svg-char__path" fill="none" d="M70,60 L430,60 L430,140 L310,140 L310,420 L190,420 L190,140 L70,140 Z" />
       </svg>
       <p class="txt"></p>
     `;
@@ -478,7 +480,7 @@ window.addEventListener("DOMContentLoaded", () => {
     splitTextRandom,
     cubeRotationEffect,
     particleDisperse,
-    kineticTypography,
+    // kineticTypography,
     pathTempoAnimation,
   ];
 
