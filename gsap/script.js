@@ -11,11 +11,12 @@ window.addEventListener("DOMContentLoaded", () => {
     overwrite: "auto",
   });
 
-  // Just 3 cool fonts
   const fonts = [
-    "Inter, sans-serif",
-    "Space Grotesk, sans-serif",
-    "Orbitron, sans-serif",
+    "Poppins, sans-serif", // For SplitText Random Chars
+    "Sniglet, cursive", // For Cube Rotation Effect
+    "Playfair Display, serif", // For Path Tempo Animation
+    "Inter, sans-serif", // For Particle Disperse
+    "Anton, sans-serif", // For Kinetic Typography (if used)
   ];
 
   const container = document.querySelector(".container");
@@ -115,8 +116,10 @@ window.addEventListener("DOMContentLoaded", () => {
       yPercent: () => gsap.utils.random(-100, 100),
       rotation: () => gsap.utils.random(-30, 30),
       autoAlpha: 0,
-      // start with colorful hues and animate back to the CSS white
-      color: (i) => `hsl(${Math.floor(gsap.utils.random(0, 360))},80%,60%)`,
+      // vibrant, saturated colors
+      color: (i) => `hsl(${Math.floor(gsap.utils.random(0, 360))},95%,55%)`,
+      fontSize: () => gsap.utils.random(1.2, 1.8) + "em",
+      fontWeight: () => (Math.random() > 0.5 ? 700 : 400),
       stagger: { amount: 1.0, from: "random" },
       duration: 0.7,
     });
@@ -194,13 +197,13 @@ window.addEventListener("DOMContentLoaded", () => {
             cube.querySelectorAll(".face"),
             {
               color: (j) =>
-                `hsl(${(i / n) * 75 + 130}, 67%,${
+                `hsl(${180 + (i / n) * 60}, 50%,${
                   100 * [rots[1].a, rots[0].a][j % 2]
                 }%)`,
             },
             {
               color: (j) =>
-                `hsl(${(i / n) * 75 + 130}, 67%,${
+                `hsl(${240 + (i / n) * 60}, 50%,${
                   100 * [rots[0].a, rots[1].a][j % 2]
                 }%)`,
             },
@@ -210,7 +213,7 @@ window.addEventListener("DOMContentLoaded", () => {
             cube.querySelectorAll(".face"),
             {
               color: (j) =>
-                `hsl(${(i / n) * 75 + 130}, 67%,${
+                `hsl(${300 + (i / n) * 60}, 50%,${
                   100 * [rots[2].a, rots[1].a][j % 2]
                 }%)`,
             },
@@ -272,7 +275,8 @@ window.addEventListener("DOMContentLoaded", () => {
 
       // Set fonts
       document.querySelectorAll(".face").forEach((face) => {
-        face.style.fontFamily = fonts[1];
+        face.style.fontFamily = fonts[1]; // Sniglet
+        face.style.fontWeight = 800; // Match Google Fonts Sniglet 800
       });
 
       // Resize handler
@@ -289,9 +293,28 @@ window.addEventListener("DOMContentLoaded", () => {
   }
 
   function particleDisperse() {
-    fillGrid();
+    // Create an extremely dense grid with minimal spacing
+    const oldGridHTML = grid.innerHTML;
+    grid.innerHTML = "";
+    const cols = Math.ceil(innerWidth / 120); // Very dense: minimal horizontal space
+    const rows = Math.ceil(innerHeight / 60); // Very dense: minimal vertical space
+    const count = cols * rows;
+
+    for (let i = 0; i < count; i++) {
+      const el = document.createElement("div");
+      el.className = "name-line";
+      el.textContent = combinedText;
+      grid.appendChild(el);
+    }
 
     const items = gsap.utils.toArray(".name-line");
+    setFont(items, fonts[2]); // Use serif font
+
+    // Increase size and font weight for bigger look
+    gsap.set(items, {
+      fontSize: 1.4 + "em",
+      fontWeight: 700,
+    });
 
     const tl = gsap.timeline();
 
@@ -304,37 +327,44 @@ window.addEventListener("DOMContentLoaded", () => {
         color: "#fff",
       },
       {
-        // reduce scatter distance to limit overlap during motion
-        x: () => gsap.utils.random(-180, 180),
-        y: () => gsap.utils.random(-180, 180),
-        opacity: 0,
-        color: (i) => `hsl(${(i / items.length) * 360},70%,55%)`,
+        // increase scatter distance for more chaotic, busy motion
+        x: () => gsap.utils.random(-280, 280),
+        y: () => gsap.utils.random(-280, 280),
+        opacity: 0.3,
+        color: (i) => `hsl(${(i / items.length) * 360},90%,50%)`,
+        fontSize: 1.8 + "em",
+        fontWeight: 900,
+        rotation: () => gsap.utils.random(-360, 360),
         stagger: {
-          amount: 1.5,
+          amount: 1.2,
           from: "random",
         },
-        duration: 1.2,
-        ease: "power4.out",
+        duration: 1.0,
+        ease: "power3.out",
       }
     ).fromTo(
       items,
       {
-        opacity: 0,
-        x: () => gsap.utils.random(-180, 180),
-        y: () => gsap.utils.random(-180, 180),
-        color: (i) => `hsl(${((i + 40) / items.length) * 360},70%,55%)`,
+        opacity: 0.3,
+        x: () => gsap.utils.random(-280, 280),
+        y: () => gsap.utils.random(-280, 280),
+        color: (i) => `hsl(${((i + 180) / items.length) * 360},90%,50%)`,
+        fontSize: 1.8 + "em",
+        rotation: () => gsap.utils.random(-360, 360),
       },
       {
         x: 0,
         y: 0,
         opacity: 1,
         color: "#fff",
+        fontSize: 1.4 + "em",
+        rotation: 0,
         stagger: {
-          amount: 1.5,
+          amount: 1.2,
           from: "random",
         },
-        duration: 1.2,
-        ease: "power4.out",
+        duration: 1.0,
+        ease: "power3.out",
       }
     );
 
@@ -345,6 +375,7 @@ window.addEventListener("DOMContentLoaded", () => {
     fillGrid();
 
     const items = gsap.utils.toArray(".name-line");
+    setFont(items, fonts[3]); // Use serif font
 
     gsap.set(items, {
       // reduce vertical stacking to limit overlap
@@ -366,8 +397,10 @@ window.addEventListener("DOMContentLoaded", () => {
       .to(items, {
         x: () => gsap.utils.random(-60, 60),
         skewX: () => gsap.utils.random(-8, 8),
-        // give a colorful flash during the kinetic burst
-        color: (i) => `hsl(${(i / items.length) * 220 + 160},78%,58%)`,
+        // vibrant rainbow colors during kinetic burst
+        color: (i) => `hsl(${(i / items.length) * 360},100%,55%)`,
+        fontSize: 1.3 + "em",
+        fontWeight: 700,
         duration: 0.4,
         stagger: {
           each: 0.01,
@@ -379,6 +412,8 @@ window.addEventListener("DOMContentLoaded", () => {
         x: 0,
         skewX: 0,
         color: "#fff",
+        fontSize: 1 + "em",
+        fontWeight: 400,
         duration: 0.6,
         ease: "expo.out",
       });
@@ -451,9 +486,12 @@ window.addEventListener("DOMContentLoaded", () => {
       yPercent: -50,
       transformOrigin: "50% 50%",
       color: "#fff",
+      fontSize: 1.2 + "em",
+      fontFamily: fonts[4], // Use serif font
+      fontWeight: 600,
     });
 
-    // Animate along path (faster duration)
+    // Animate along path with vibrant colors
     const tl = gsap.timeline();
     tl.to(
       chars,
@@ -465,6 +503,7 @@ window.addEventListener("DOMContentLoaded", () => {
           start: 0,
           end: 1,
         },
+        color: (i) => `hsl(${(i / chars.length) * 360},95%,60%)`,
         stagger: { each: 0.08 },
         duration: 8,
         ease: "none",
