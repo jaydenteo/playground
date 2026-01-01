@@ -2,9 +2,17 @@ window.addEventListener("DOMContentLoaded", () => {
   // Register GSAP plugins
   if (typeof SplitText !== "undefined") {
     gsap.registerPlugin(SplitText);
+    console.log("SplitText registered");
+  } else {
+    console.info(
+      "SplitText not available — using manual fallback (creating spans)"
+    );
   }
   if (typeof MotionPathPlugin !== "undefined") {
     gsap.registerPlugin(MotionPathPlugin);
+    console.log("MotionPathPlugin registered");
+  } else {
+    console.warn("MotionPathPlugin missing");
   }
 
   gsap.defaults({
