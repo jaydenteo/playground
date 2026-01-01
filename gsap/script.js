@@ -394,10 +394,15 @@ window.addEventListener("DOMContentLoaded", () => {
     const wrapper = document.createElement("div");
     wrapper.className = "svg-anim-container";
     wrapper.innerHTML = `
-      <svg class="svg-char" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500">
-        <!-- Invisible motion path tracing the OUTER perimeter of a thick 'T' -->
-        <!-- Path follows the outer edges of the top bar and the vertical stem (closed outline) -->
-        <path class="svg-char__path" fill="none" d="M70,60 L430,60 L430,140 L310,140 L310,420 L190,420 L190,140 L70,140 Z" />
+      <svg class="svg-char" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
+        <!-- Motion path of the music note (outline) -->
+        <path
+          class="svg-char__path"
+          fill="none"
+          stroke="transparent"
+          stroke-width="1"
+          d="M24 6v21.1c-1.18-.68-2.54-1.1-4-1.1-4.42 0-8 3.58-8 8s3.58 8 8 8 8-3.58 8-8V14h8V6h-12z"
+        />
       </svg>
       <p class="txt"></p>
     `;
@@ -479,9 +484,9 @@ window.addEventListener("DOMContentLoaded", () => {
   const animations = [
     splitTextRandom,
     cubeRotationEffect,
+    pathTempoAnimation,
     particleDisperse,
     // kineticTypography,
-    pathTempoAnimation,
   ];
 
   function playNextAnimation() {
