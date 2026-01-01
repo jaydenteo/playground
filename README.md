@@ -1,0 +1,4 @@
+- [AMPLFY](https://jaydenteo.github.io/playground/amplfy/live/)
+- [Breakout Game](https://jaydenteo.github.io/playground/breakout/)
+- [Affirmations](https://jaydenteo.github.io/playground/affirmations/)
+- [GSAP Experiments](https://jaydenteo.github.io/playground/gsap/)
