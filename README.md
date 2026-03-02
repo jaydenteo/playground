@@ -2,3 +2,4 @@
 - [Breakout Game](https://jaydenteo.github.io/playground/breakout/)
 - [Affirmations](https://jaydenteo.github.io/playground/affirmations/)
 - [GSAP Experiments](https://jaydenteo.github.io/playground/gsap/)
+- [Countdown](https://jaydenteo.github.io/playground/countdown/index.html?person=[])
