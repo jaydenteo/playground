@@ -7,7 +7,38 @@
 
 (function () {
   const params = new URLSearchParams(window.location.search);
-  const personId = params.get("person") || "rainbow";
+
+  function getPersonIdFromUrl() {
+    // 1) Explicit query string (?person=NAME)
+    const fromQuery = params.get("person");
+    if (fromQuery) return fromQuery;
+
+    // 2) Path segment: /.../countdown/NAME or /.../countdown/NAME/
+    const path = window.location.pathname.replace(/\/+$/, ""); // trim trailing slash
+    const segments = path.split("/").filter(Boolean);
+    if (segments.length === 0) return "rainbow";
+
+    const last = segments[segments.length - 1];
+    const secondLast = segments[segments.length - 2] || "";
+
+    // If the last part is "index.html", use the previous part if it isn't "countdown"
+    if (last.toLowerCase() === "index.html") {
+      if (secondLast && secondLast.toLowerCase() !== "countdown") {
+        return secondLast;
+      }
+      return "rainbow";
+    }
+
+    // If we are at /.../countdown, fall back to default
+    if (last.toLowerCase() === "countdown") {
+      return "rainbow";
+    }
+
+    // Otherwise treat the last segment as the person name
+    return last;
+  }
+
+  const personId = getPersonIdFromUrl();
 
   const headlineEl = document.getElementById("headline");
   const subheadlineEl = document.getElementById("subheadline");
@@ -55,7 +86,7 @@
           headlineEl.textContent = `Long live ${name}'s 30s`;
         }
         if (subheadlineEl) {
-          subheadlineEl.textContent = "The death of their 20s has arrived.";
+          subheadlineEl.textContent = "The death of your 20s has arrived.";
         }
         if (countdownInterval) {
           clearInterval(countdownInterval);
