@@ -46,6 +46,9 @@ canvas {
   background: #fff;
   display: block;
   border-radius: 6px;
+}
+
+canvas.playing {
   cursor: none;
 }
 
