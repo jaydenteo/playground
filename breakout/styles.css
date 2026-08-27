@@ -46,6 +46,7 @@ canvas {
   background: #fff;
   display: block;
   border-radius: 6px;
+  cursor: none;
 }
 
 #startButton {

@@ -11,6 +11,9 @@ let cars = [];
 let paddleWidth, paddleHeight, ballRadius, x, y, dx, dy, paddleX;
 let animationId;
 let gameRunning = false;
+let mouseInCanvas = false;
+let cursorX = 0;
+let cursorY = 0;
 
 // Resize canvas dynamically
 function resizeCanvas() {
@@ -126,12 +129,51 @@ function collisionDetection() {
   });
 }
 
+function canvasPosFromEvent(e) {
+  const rect = canvas.getBoundingClientRect();
+  return {
+    x: ((e.clientX - rect.left) * canvas.width) / rect.width,
+    y: ((e.clientY - rect.top) * canvas.height) / rect.height,
+  };
+}
+
+function drawCursor() {
+  if (!mouseInCanvas) return;
+
+  const radius = Math.max(8, canvas.width * 0.026);
+  ctx.save();
+  ctx.translate(cursorX, cursorY);
+
+  ctx.beginPath();
+  ctx.arc(0, 0, radius, 0, Math.PI * 2);
+  ctx.strokeStyle = "#fff";
+  ctx.lineWidth = 7;
+  ctx.stroke();
+
+  ctx.beginPath();
+  ctx.arc(0, 0, radius, 0, Math.PI * 2);
+  ctx.strokeStyle = "#000";
+  ctx.lineWidth = 3.5;
+  ctx.stroke();
+
+  ctx.beginPath();
+  ctx.arc(0, 0, radius * 0.32, 0, Math.PI * 2);
+  ctx.fillStyle = "#000";
+  ctx.fill();
+  ctx.strokeStyle = "#fff";
+  ctx.lineWidth = 2;
+  ctx.stroke();
+
+  ctx.restore();
+}
+
 // Draw preview
 function drawPreview() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   drawCars();
   drawBall();
   drawPaddle();
+  drawCursor();
 }
 
 // Game loop
@@ -140,6 +182,7 @@ function draw() {
   drawCars();
   drawBall();
   drawPaddle();
+  drawCursor();
   collisionDetection();
 
   if (x + dx > canvas.width - ballRadius || x + dx < ballRadius) dx = -dx;
@@ -165,15 +208,29 @@ function draw() {
   animationId = requestAnimationFrame(draw);
 }
 
-// Mouse paddle
+// Mouse paddle + in-game cursor
 canvas.addEventListener("mousemove", (e) => {
-  if (!gameRunning) return;
-  const rect = canvas.getBoundingClientRect();
-  const mouseX = e.clientX - rect.left;
-  paddleX = mouseX - paddleWidth / 2;
-  if (paddleX < 0) paddleX = 0;
-  if (paddleX + paddleWidth > canvas.width)
-    paddleX = canvas.width - paddleWidth;
+  const { x: mouseX, y: mouseY } = canvasPosFromEvent(e);
+  cursorX = mouseX;
+  cursorY = mouseY;
+  mouseInCanvas = true;
+
+  if (gameRunning) {
+    paddleX = mouseX - paddleWidth / 2;
+    if (paddleX < 0) paddleX = 0;
+    if (paddleX + paddleWidth > canvas.width)
+      paddleX = canvas.width - paddleWidth;
+  } else {
+    drawPreview();
+  }
+});
+
+canvas.addEventListener("mouseenter", (e) => {
+  const { x: mouseX, y: mouseY } = canvasPosFromEvent(e);
+  cursorX = mouseX;
+  cursorY = mouseY;
+  mouseInCanvas = true;
+  if (!gameRunning) drawPreview();
 });
 
 // Touch paddle for mobile
@@ -193,8 +250,12 @@ canvas.addEventListener(
 );
 
 // Start button
-startButton.addEventListener("click", () => {
+startButton.addEventListener("click", (e) => {
   startButton.style.display = "none";
+  const { x: mouseX, y: mouseY } = canvasPosFromEvent(e);
+  cursorX = mouseX;
+  cursorY = mouseY;
+  mouseInCanvas = true;
   gameRunning = true;
   draw();
 });
